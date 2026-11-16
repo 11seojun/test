@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0712">
+<title>CANDY CASINO — SLOT</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0712;--purple:#a855f7;--pink:#e879f9;--line:#704394}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at 50% 35%,#38204f 0,#1b1028 42%,#09060e 80%);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
+.app{width:min(100%,540px);text-align:center}
+.brand{font-size:clamp(1.8rem,7vw,2.7rem);font-weight:950;letter-spacing:.07em;text-shadow:0 0 10px #c084fc,0 0 30px #9333ea}
+.sub{color:#d8b4fe;font-size:.75rem;letter-spacing:.28em;font-weight:800;margin-top:7px}
+.machine{margin-top:30px;padding:clamp(18px,5vw,28px);border:2px solid #a855f7;border-radius:25px;background:linear-gradient(145deg,#38204e,#1c1028 60%,#100a18);box-shadow:0 0 18px #a855f766,0 0 55px #7e22ce33,inset 0 0 25px #0008}
+.machine-title{font-size:.78rem;letter-spacing:.3em;color:#f0c9ff;font-weight:900}
+.reels{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:24px 0}
+.reel{height:clamp(100px,25vw,145px);display:grid;place-items:center;border-radius:17px;background:linear-gradient(#fff,#e8dced);color:#21132d;font-size:clamp(3.1rem,14vw,5rem);box-shadow:inset 0 0 0 4px #c5a3d7,0 8px 18px #0007}
+.reel.spin{animation:roll .12s infinite alternate}
+@keyframes roll{from{transform:translateY(-3px);filter:blur(0)}to{transform:translateY(3px);filter:blur(1.4px)}}
+button{width:100%;padding:17px;border:0;border-radius:14px;background:linear-gradient(100deg,#a855f7,#7e22ce,#c026d3);color:white;font-size:1.25rem;font-weight:950;letter-spacing:.12em;box-shadow:0 5px 22px #a855f766;cursor:pointer}
+button:active{transform:scale(.985)}
+button:disabled{opacity:.55;cursor:wait}
+.result{min-height:60px;display:grid;place-items:center;margin-top:15px;color:#f5d0fe;font-size:1.12rem;font-weight:900;text-shadow:0 0 12px #c026d3}
+.note{margin-top:22px;color:#bda9cc;font-size:.76rem;line-height:1.6}
+.spark{color:#e9b9ff}
+</style>
+</head>
+<body>
+<main class="app">
+ <div class="brand">🍬 CANDY CASINO</div>
+ <div class="sub">SCHOOL FESTIVAL · LUCKY SLOT</div>
+ <section class="machine">
+  <div class="machine-title">✦ TRY YOUR LUCK ✦</div>
+  <div class="reels" aria-label="슬롯 결과">
+   <div class="reel" id="r0">🍒</div>
+   <div class="reel" id="r1">🍋</div>
+   <div class="reel" id="r2">🍇</div>
+  </div>
+  <button id="spin">SPIN</button>
+  <div class="result" id="result" aria-live="polite">버튼을 눌러 슬롯을 돌려 보세요!</div>
+ </section>
+ <div class="note"><span class="spark">★</span> 당첨 결과에 따라 부스 운영자가 마이쮸를 지급합니다. <span class="spark">★</span></div>
+</main>
+<script>
+(()=>{
+ const symbols=['🍒','🍋','🍇','🍉','⭐','🔔','💎'];
+ const $=id=>document.getElementById(id);
+ let busy=false;
+ const pick=()=>symbols[Math.floor(Math.random()*symbols.length)];
+ $('spin').addEventListener('click',()=>{
+  if(busy)return;
+  busy=true;$('spin').disabled=true;$('result').textContent='행운을 확인하는 중...';
+  document.querySelectorAll('.reel').forEach(el=>el.classList.add('spin'));
+  let count=0;
+  const timer=setInterval(()=>{
+   for(let i=0;i<3;i++)$('r'+i).textContent=pick();
+   if(++count>=17){
+    clearInterval(timer);
+    const result=[pick(),pick(),pick()];
+    result.forEach((s,i)=>$('r'+i).textContent=s);
+    document.querySelectorAll('.reel').forEach(el=>el.classList.remove('spin'));
+    let msg='꽝! 다음 기회에 도전하세요!';
+    if(result[0]===result[1]&&result[1]===result[2]){
+      msg=result[0]==='💎'?'💎 JACKPOT! 💎':result[0]==='⭐'?'⭐ SUPER WIN! ⭐':'🎉 TRIPLE WIN! 🎉';
+    }else if(result[0]===result[1]||result[1]===result[2]||result[0]===result[2]){
+      msg='✨ 당첨! 같은 그림 2개! ✨';
+    }
+    $('result').textContent=msg;
+    busy=false;$('spin').disabled=false;
+   }
+  },90);
+ });
+})();
+</script>
+</body>
+</html>
